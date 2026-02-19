@@ -21,10 +21,10 @@ test.describe('Hepsiburada Web Otomasyonu', () => {
     await searchPage.search('adidas ayakkabi');
     await searchPage.verifyPageLoaded();
 
-    await filterPage.applyBedenFilter('42');
+    await filterPage.applySizeFilter('42');
     await filterPage.applyPriceFilter('3000', '5000');
-    await filterPage.applyCinsiyetFilter();
-    await filterPage.applyRenkFilter();
+    await filterPage.applyGenderFilter();
+    await filterPage.applyColorFilter();
 
     await filterPage.verifyFiltersApplied();
     await productListPage.verifyProductsMatchFilters();
