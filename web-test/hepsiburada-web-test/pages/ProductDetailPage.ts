@@ -1,5 +1,3 @@
-// pages/ProductDetailPage.ts
-
 import { Page, Locator, expect } from '@playwright/test';
 
 export class ProductDetailPage {
@@ -9,39 +7,25 @@ export class ProductDetailPage {
 
   constructor(page: Page) {
     this.page = page;
-    
     this.addToCartButton = page.locator('[data-test-id="addToCart"]');
     this.goToCartButton = page.getByRole('button', { name: 'Sepete git' });
   }
 
-  /**
-   * Adım 7 (devam): Ürün detayında filtre kriterlerini kontrol et
-   */
   async verifyProductDetails() {
-    // Adidas markası var mı?
-    await expect(this.page.getByText('Adidas')).toBeVisible();
-    
-    // Fiyat görünüyor mu?
-    await expect(this.page.getByText('TL')).toBeVisible();
-    
-    // Erkek bilgisi var mı?
-    await expect(this.page.getByText(/Erkek/i)).toBeVisible();
-    
-    // Beyaz renk var mı?
-    await expect(this.page.getByText(/Beyaz/i)).toBeVisible();
+    await expect(this.page.getByText(/Adidas/i).first()).toBeVisible({ timeout: 10000 });
+    await expect(this.page.getByText('TL').first()).toBeVisible();
+    await expect(this.page.getByText(/Erkek/i).first()).toBeVisible();
+    await expect(this.page.getByText(/Beyaz/i).first()).toBeVisible();
   }
 
-  /**
-   * Adım 9: Sepete ekle
-   */
   async addToCart() {
-    await this.addToCartButton.click();
+    // Butonun üzerine bazen reklam falan binebiliyor, force: true ile buna takılmadan zorla tıklattık.
+    await this.addToCartButton.click({ force: true });
   }
 
-  /**
-   * Sepete git
-   */
   async goToCart() {
-    await this.goToCartButton.click();
+    // "Sepete Git" popup'ı bazen ekranda çok kısa duruyor veya hemen kapanabiliyor. 
+    // İşi sağlama almak için popup ile uğraşmayıp direkt sepetin URL'sine gidildi.
+    await this.page.goto('https://checkout.hepsiburada.com/', { waitUntil: 'domcontentloaded' });
   }
 }

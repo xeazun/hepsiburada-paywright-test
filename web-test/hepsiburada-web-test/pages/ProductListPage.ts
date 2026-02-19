@@ -1,5 +1,3 @@
-// pages/ProductListPage.ts
-
 import { Page, expect } from '@playwright/test';
 
 export class ProductListPage {
@@ -9,31 +7,19 @@ export class ProductListPage {
     this.page = page;
   }
 
-  /**
-   * Adım 7: Listelenen ürünlerin filtre kriterlerine uygun olduğunu kontrol et
-   */
   async verifyProductsMatchFilters() {
-    // Adidas ürünlerinin olduğunu doğrula
     await expect(this.page.getByText('Adidas').first()).toBeVisible();
-    
-    // Fiyat bilgisinin göründüğünü doğrula
     await expect(this.page.getByText('TL').first()).toBeVisible();
-    
-    // Erkek ürünü var mı?
     await expect(this.page.getByText(/Erkek/i).first()).toBeVisible();
   }
 
-  /**
-   * Adım 8: İlk ürünü seç (yeni popup açılır)
-   */
   async selectFirstProduct() {
-    // Popup beklemeye hazır ol
+    // Yeni sekmede açılan detay sayfasını kaçırmamak için önce popup event'ini yakalaması beklenir.
     const pagePromise = this.page.waitForEvent('popup');
-    
-    // Ürüne tıkla
-    await this.page.getByRole('link', { name: /Adidas Strutter Erkek Günlük Spor/ }).click();
-    
-    // Yeni popup'ı döndür
+
+    // Stoklar her an değişebiliyor, o yüzden sabit bir isim aramak yerine direkt listedeki ilk ürüne tıklama yaklaşımı izlenir.
+    const firstProductLink = this.page.locator('[data-test-id="product-card"] a').first().or(this.page.locator('li[class*="productListContent"] a').first());
+    await firstProductLink.click();
     return await pagePromise;
   }
 }
